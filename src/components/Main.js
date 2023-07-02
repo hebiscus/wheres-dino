@@ -12,6 +12,14 @@ const TargetBox = styled.div`
     top: ${props => props.$cord[1] + 'px'}
 `
 
+const DropdownMenu = styled.div`
+    height: 10px;
+    width: 10px;
+    background-color: black;
+    position: relative;
+    left: 30px;
+`
+
 
 function Main() {
     const [clickPosition, setClickPosition] = useState([]);
@@ -36,7 +44,7 @@ function Main() {
     const toogleTarget = () => setShowTargetBox(!showTargetBox);
 
     function targetBoxSwitch(event) {
-        toogleTarget();
+        // toogleTarget();
         const [cordX, cordY] = grabCordOnPage(event);
         setClickPosition(
             [cordX,cordY])
@@ -45,7 +53,9 @@ function Main() {
     return (
         <div>
             <img onClick={targetBoxSwitch} className='dino-picture' src='./zs9fTdh.gif' alt="dinosaurs"></img>
-            <TargetBox $show={showTargetBox} $cord={clickPosition} />
+            <TargetBox $show={showTargetBox} $cord={clickPosition}>
+                <DropdownMenu />
+            </TargetBox>
         </div>
     )
 }
