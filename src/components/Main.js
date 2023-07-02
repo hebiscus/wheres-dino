@@ -41,9 +41,8 @@ function Main() {
     const [showTargetBox, setShowTargetBox] = useState(false);
 
     function grabClickCoordinates(event) {
-        console.log(event.nativeEvent.offsetX)
-        const cordX = Math.floor(event.nativeEvent.offsetX / window.innerWidth * 100)
-        const cordY = Math.floor(event.nativeEvent.offsetY / window.innerHeight * 100)
+        const cordX = Math.floor(event.nativeEvent.offsetX / event.nativeEvent.target.width * 100)
+        const cordY = Math.floor(event.nativeEvent.offsetY / event.nativeEvent.target.width * 100)
         return [cordX, cordY]
     }
 
@@ -73,10 +72,23 @@ function Main() {
         return charSnap.data();
     }
 
+    const isCoordinateNear = (charCord, min, max) => {
+        return charCord >= min && charCord <= max;
+    }
+
     const isCharFound = async (event) => {
         if(!event.target.tagName === 'BUTTON') return;
         const characterData = await findCharData(event.target.innerText)
-        console.log(clickPosition, characterData)
+        console.log(clickPosition, characterData.coordinates)
+        const [charCordX, charCordY] = characterData.coordinates
+        const checkX = isCoordinateNear(clickPosition[0], charCordX - 30, charCordY + 30);
+        const checkY = isCoordinateNear(clickPosition[1], charCordY - 30, charCordY + 30);
+        // console.log(checkX, checkY)
+        if (checkX === false || checkY === false) {
+            console.log("incorrect!");
+            return
+        } 
+        else console.log(`you found ${characterData.name}`)
     }
 
     return (
