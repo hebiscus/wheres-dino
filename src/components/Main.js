@@ -13,11 +13,23 @@ const TargetBox = styled.div`
 `
 
 const DropdownMenu = styled.div`
-    height: 10px;
-    width: 10px;
+    min-width: 50px;
+    min-height: 65px;
+    max-width: 80px;
     background-color: black;
     position: relative;
-    left: 30px;
+    top: -10px;
+    left: 35px;
+    display: flex;
+    flex-direction: column;
+`
+
+const ChoiceButton = styled.button`
+    background: transparent;
+    text-decoration: none;
+    border: none;
+    line-height: normal;
+    color: white;
 `
 
 
@@ -41,20 +53,30 @@ function Main() {
         return [cordX, cordY];
     }
 
-    const toogleTarget = () => setShowTargetBox(!showTargetBox);
+    const toogleTarget = () => setShowTargetBox(true);
 
     function targetBoxSwitch(event) {
-        // toogleTarget();
+        toogleTarget();
         const [cordX, cordY] = grabCordOnPage(event);
         setClickPosition(
             [cordX,cordY])
+    }
+
+    function isCharFound(event) {
+        if(!event.target.tagName === 'BUTTON') return;
+        console.log("button!")
     }
 
     return (
         <div>
             <img onClick={targetBoxSwitch} className='dino-picture' src='./zs9fTdh.gif' alt="dinosaurs"></img>
             <TargetBox $show={showTargetBox} $cord={clickPosition}>
-                <DropdownMenu />
+                <DropdownMenu onClick={isCharFound}>
+                    <ChoiceButton>Sheep</ChoiceButton>
+                    <ChoiceButton>Goat</ChoiceButton>
+                    <ChoiceButton>Alien</ChoiceButton>
+                    <ChoiceButton>Dog</ChoiceButton>
+                </DropdownMenu>
             </TargetBox>
         </div>
     )
