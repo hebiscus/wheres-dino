@@ -73,6 +73,7 @@ function Main() {
     }
 
     const isCoordinateNear = (charCord, min, max) => {
+        console.log(charCord, min, max)
         return charCord >= min && charCord <= max;
     }
 
@@ -81,9 +82,9 @@ function Main() {
         const characterData = await findCharData(event.target.innerText)
         console.log(clickPosition, characterData.coordinates)
         const [charCordX, charCordY] = characterData.coordinates
-        const checkX = isCoordinateNear(clickPosition[0], charCordX - 30, charCordY + 30);
-        const checkY = isCoordinateNear(clickPosition[1], charCordY - 30, charCordY + 30);
-        // console.log(checkX, checkY)
+        const checkX = isCoordinateNear(clickPosition[0], charCordX - 2, charCordX + 2);
+        const checkY = isCoordinateNear(clickPosition[1], charCordY - 2, charCordY + 2);
+        console.log(checkX, checkY)
         if (checkX === false || checkY === false) {
             console.log("incorrect!");
             return
