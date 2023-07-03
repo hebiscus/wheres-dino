@@ -34,11 +34,25 @@ const ChoiceButton = styled.button`
     color: white;
 `
 
+const WrongGuessBox = styled.div`
+    // display: ${props => props.$show ? "block" : "none"};
+    background-color: black;
+    height: 50px;
+    width: 130px;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+`
+
 
 function Main() {
     const [targetPosition, setTargetPosition] = useState([]);
     const [clickPosition, setClickPosition] = useState([]);
     const [showTargetBox, setShowTargetBox] = useState(false);
+    const [showWrongBox, setWrongBox] = useState(false)
 
     function grabClickCoordinates(event) {
         const cordX = Math.floor(event.nativeEvent.offsetX / event.nativeEvent.target.width * 100)
@@ -63,6 +77,7 @@ function Main() {
         setClickPosition(
             [charX, charY]
         );
+        setWrongBox(false)
     }
 
     const findCharData = async (name) => {
@@ -73,7 +88,6 @@ function Main() {
     }
 
     const isCoordinateNear = (charCord, min, max) => {
-        console.log(charCord, min, max)
         return charCord >= min && charCord <= max;
     }
 
@@ -82,11 +96,11 @@ function Main() {
         const characterData = await findCharData(event.target.innerText)
         console.log(clickPosition, characterData.coordinates)
         const [charCordX, charCordY] = characterData.coordinates
-        const checkX = isCoordinateNear(clickPosition[0], charCordX - 2, charCordX + 2);
-        const checkY = isCoordinateNear(clickPosition[1], charCordY - 2, charCordY + 2);
-        console.log(checkX, checkY)
+        const checkX = isCoordinateNear(clickPosition[0], charCordX - 1, charCordX + 1);
+        const checkY = isCoordinateNear(clickPosition[1], charCordY - 1, charCordY + 1);
         if (checkX === false || checkY === false) {
             console.log("incorrect!");
+            setWrongBox(true)
             return
         } 
         else console.log(`you found ${characterData.name}`)
@@ -103,6 +117,7 @@ function Main() {
                     <ChoiceButton>Dog</ChoiceButton>
                 </DropdownMenu>
             </TargetBox>
+            {showWrongBox ? <WrongGuessBox>Wrong guess!</WrongGuessBox> : null}
         </div>
     )
 }
