@@ -1,8 +1,8 @@
 import '../styles/Main.scss'
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { db } from '../Firebase';
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 
 const TargetBox = styled.div`
     background-color: red;
@@ -35,7 +35,6 @@ const ChoiceButton = styled.button`
 `
 
 const WrongGuessBox = styled.div`
-    // display: ${props => props.$show ? "block" : "none"};
     background-color: black;
     height: 50px;
     width: 130px;
@@ -47,12 +46,41 @@ const WrongGuessBox = styled.div`
     color: white;
 `
 
+const CharacterFoundBox = styled.div`
+    background-color: cyan;
+    height: 50px;
+    width: 130px;
+`
+
 
 function Main() {
     const [targetPosition, setTargetPosition] = useState([]);
     const [clickPosition, setClickPosition] = useState([]);
     const [showTargetBox, setShowTargetBox] = useState(false);
-    const [showWrongBox, setWrongBox] = useState(false)
+    const [showWrongBox, setWrongBox] = useState(false);
+    const [characters, setCharacters] = useState([]);
+
+    useEffect(() => {
+        let ignore = false;
+
+        async function getCharacters() {
+            const charRef = collection(db, "characters");
+            const charSnap = await getDocs(charRef);
+            console.log(charSnap)
+            charSnap.forEach(character => {
+                console.log(character.data())
+                const characterData = character.data()
+                setCharacters((previousCharacters) => {
+                    return [...previousCharacters, character.data()]
+                })
+            })
+        }
+        getCharacters();
+
+        return () => {
+            ignore = true;
+          };
+    }, [])
 
     function grabClickCoordinates(event) {
         const cordX = Math.floor(event.nativeEvent.offsetX / event.nativeEvent.target.width * 100)
@@ -99,9 +127,7 @@ function Main() {
         const checkX = isCoordinateNear(clickPosition[0], charCordX - 1, charCordX + 1);
         const checkY = isCoordinateNear(clickPosition[1], charCordY - 1, charCordY + 1);
         if (checkX === false || checkY === false) {
-            console.log("incorrect!");
             setWrongBox(true)
-            return
         } 
         else console.log(`you found ${characterData.name}`)
     }
@@ -118,6 +144,9 @@ function Main() {
                 </DropdownMenu>
             </TargetBox>
             {showWrongBox ? <WrongGuessBox>Wrong guess!</WrongGuessBox> : null}
+            {characters.map((character) => {
+               return <CharacterFoundBox key={character.name}>{character.name}</CharacterFoundBox>
+            })}
         </div>
     )
 }
