@@ -63,23 +63,24 @@ function Main() {
     useEffect(() => {
         let ignore = false;
 
-        async function getCharacters() {
+        const getCharacters = async () => {
             const charRef = collection(db, "characters");
             const charSnap = await getDocs(charRef);
-            console.log(charSnap)
-            charSnap.forEach(character => {
-                console.log(character.data())
-                const characterData = character.data()
-                setCharacters((previousCharacters) => {
-                    return [...previousCharacters, character.data()]
+            if (!ignore) {
+                charSnap.forEach(character => {
+                    console.log(character.data())
+                    setCharacters((previousCharacters) => {
+                        return [...previousCharacters, character.data()]
+                    })
                 })
-            })
+            } 
         }
+        
         getCharacters();
 
         return () => {
             ignore = true;
-          };
+        };
     }, [])
 
     function grabClickCoordinates(event) {
