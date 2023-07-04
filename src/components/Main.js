@@ -2,7 +2,7 @@ import '../styles/Main.scss'
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { db } from '../Firebase';
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs, setDoc, onSnapshot } from "firebase/firestore";
 
 const TargetBox = styled.div`
     background-color: red;
@@ -59,6 +59,7 @@ function Main() {
     const [showTargetBox, setShowTargetBox] = useState(false);
     const [showWrongBox, setWrongBox] = useState(false);
     const [characters, setCharacters] = useState([]);
+    const [foundCharacters, setFoundCharacters] = useState([]);
 
     useEffect(() => {
         let ignore = false;
@@ -82,6 +83,22 @@ function Main() {
             ignore = true;
         };
     }, [])
+
+    useEffect(() => {
+        const q = query(collection(db, "characters"), where("foundStatus", "==", true));
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const characters = [];
+            querySnapshot.forEach((doc) => {
+                characters.push(doc.data().name);
+            });
+            console.log("current found characters", characters.join(", "));
+            console.log(characters)
+            setFoundCharacters(characters);
+        });
+
+        return () => unsubscribe();
+    }, [])
+
 
     function grabClickCoordinates(event) {
         const cordX = Math.floor(event.nativeEvent.offsetX / event.nativeEvent.target.width * 100)
@@ -128,9 +145,13 @@ function Main() {
         const checkX = isCoordinateNear(clickPosition[0], charCordX - 1, charCordX + 1);
         const checkY = isCoordinateNear(clickPosition[1], charCordY - 1, charCordY + 1);
         if (checkX === false || checkY === false) {
-            setWrongBox(true)
+            setWrongBox(true);
         } 
-        else console.log(`you found ${characterData.name}`)
+        else {
+            console.log(`you found ${characterData.name}`)
+            const charRef = doc(db, 'characters', `${characterData.name}`);
+            setDoc(charRef, { foundStatus: true }, { merge: true });
+        }
     }
 
     return (
@@ -145,8 +166,8 @@ function Main() {
                 </DropdownMenu>
             </TargetBox>
             {showWrongBox ? <WrongGuessBox>Wrong guess!</WrongGuessBox> : null}
-            {characters.map((character) => {
-               return <CharacterFoundBox key={character.name}>{character.name}</CharacterFoundBox>
+            {foundCharacters.map((character) => {
+                    return <CharacterFoundBox key={character}>{character}</CharacterFoundBox>
             })}
         </div>
     )
