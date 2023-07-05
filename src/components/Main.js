@@ -46,8 +46,11 @@ const WrongGuessBox = styled.div`
     color: white;
 `
 
-const CharacterFoundBox = styled.div`
+const CharacterFoundBox = styled(WrongGuessBox)`
+    position: absolute;
     background-color: cyan;
+    left: ${props => props.$cord[0] + 'px'};
+    top: ${props => props.$cord[1] + 'px'};
 `
 
 
@@ -56,32 +59,22 @@ function Main() {
     const [clickPosition, setClickPosition] = useState([]);
     const [showTargetBox, setShowTargetBox] = useState(false);
     const [showWrongBox, setWrongBox] = useState(false);
-    const [characters, setCharacters] = useState([]);
+    const [unfoundCharacters, setUnfoundCharacters] = useState([]);
     const [foundCharacters, setFoundCharacters] = useState([]);
-    const [choiceActive, setChoiceActive] = useState(true);
 
-    // useEffect(() => {
-    //     let ignore = false;
+    useEffect(() => {
+        const q = query(collection(db, "characters"), where("foundStatus", "==", false));
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const characters = [];
+            querySnapshot.forEach((doc) => {
+                characters.push(doc.data());
+            });
+            console.log("current unfound characters", ...characters);
+            setUnfoundCharacters(characters);
+        });
 
-    //     const getCharacters = async () => {
-    //         const charRef = collection(db, "characters");
-    //         const charSnap = await getDocs(charRef);
-    //         if (!ignore) {
-    //             charSnap.forEach(character => {
-    //                 console.log(character.data())
-    //                 setCharacters((previousCharacters) => {
-    //                     return [...previousCharacters, character.data()]
-    //                 })
-    //             })
-    //         } 
-    //     }
-        
-    //     getCharacters();
-
-    //     return () => {
-    //         ignore = true;
-    //     };
-    // }, [])
+        return () => unsubscribe();
+    }, [])
 
     useEffect(() => {
         const q = query(collection(db, "characters"), where("foundStatus", "==", true));
@@ -96,7 +89,6 @@ function Main() {
 
         return () => unsubscribe();
     }, [])
-
 
     function grabClickCoordinates(event) {
         const cordX = Math.floor(event.nativeEvent.offsetX / event.nativeEvent.target.width * 100)
@@ -146,10 +138,13 @@ function Main() {
             setWrongBox(true);
         } 
         else {
+            const rightChoiceCord = [event.pageX, event.pageY];
+            console.log(rightChoiceCord)
             console.log(`you found ${characterData.name}`)
             const charRef = doc(db, 'characters', `${characterData.name}`);
             await updateDoc(charRef, {
-                foundStatus: true
+                foundStatus: true,
+                coordinatesOnPage: rightChoiceCord,
               });
         }
     }
@@ -159,15 +154,14 @@ function Main() {
             <img onClick={targetBoxSwitch} className='dino-picture' src='./zs9fTdh.gif' alt="dinosaurs"></img>
             <TargetBox $show={showTargetBox} $cord={targetPosition}>
                 <DropdownMenu onClick={isCharFound}>
-                    <ChoiceButton>Sheep</ChoiceButton>
-                    <ChoiceButton>Goat</ChoiceButton>
-                    <ChoiceButton>Alien</ChoiceButton>
-                    <ChoiceButton>Dog</ChoiceButton>
+                    {unfoundCharacters.map((character) => {
+                        return <ChoiceButton key={character.name}>{character.name}</ChoiceButton>
+                    })}
                 </DropdownMenu>
             </TargetBox>
             {showWrongBox ? <WrongGuessBox>Wrong guess!</WrongGuessBox> : null}
             {foundCharacters.map((character) => {
-                return <CharacterFoundBox $cord={character.coordinates} key={character.name}>{character.name}</CharacterFoundBox>
+                return <CharacterFoundBox $cord={character.coordinatesOnPage} key={character.name}>{character.name}</CharacterFoundBox>
             })}
         </div>
     )
