@@ -2,7 +2,7 @@ import '../styles/Main.scss'
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { db } from '../Firebase';
-import { doc, getDoc, collection, query, where, getDocs, setDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs, setDoc, onSnapshot, updateDoc } from "firebase/firestore";
 
 const TargetBox = styled.div`
     background-color: red;
@@ -48,8 +48,6 @@ const WrongGuessBox = styled.div`
 
 const CharacterFoundBox = styled.div`
     background-color: cyan;
-    height: 50px;
-    width: 130px;
 `
 
 
@@ -60,39 +58,39 @@ function Main() {
     const [showWrongBox, setWrongBox] = useState(false);
     const [characters, setCharacters] = useState([]);
     const [foundCharacters, setFoundCharacters] = useState([]);
+    const [choiceActive, setChoiceActive] = useState(true);
 
-    useEffect(() => {
-        let ignore = false;
+    // useEffect(() => {
+    //     let ignore = false;
 
-        const getCharacters = async () => {
-            const charRef = collection(db, "characters");
-            const charSnap = await getDocs(charRef);
-            if (!ignore) {
-                charSnap.forEach(character => {
-                    console.log(character.data())
-                    setCharacters((previousCharacters) => {
-                        return [...previousCharacters, character.data()]
-                    })
-                })
-            } 
-        }
+    //     const getCharacters = async () => {
+    //         const charRef = collection(db, "characters");
+    //         const charSnap = await getDocs(charRef);
+    //         if (!ignore) {
+    //             charSnap.forEach(character => {
+    //                 console.log(character.data())
+    //                 setCharacters((previousCharacters) => {
+    //                     return [...previousCharacters, character.data()]
+    //                 })
+    //             })
+    //         } 
+    //     }
         
-        getCharacters();
+    //     getCharacters();
 
-        return () => {
-            ignore = true;
-        };
-    }, [])
+    //     return () => {
+    //         ignore = true;
+    //     };
+    // }, [])
 
     useEffect(() => {
         const q = query(collection(db, "characters"), where("foundStatus", "==", true));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const characters = [];
             querySnapshot.forEach((doc) => {
-                characters.push(doc.data().name);
+                characters.push(doc.data());
             });
-            console.log("current found characters", characters.join(", "));
-            console.log(characters)
+            console.log("current found characters", ...characters);
             setFoundCharacters(characters);
         });
 
@@ -140,7 +138,7 @@ function Main() {
     const isCharFound = async (event) => {
         if(!event.target.tagName === 'BUTTON') return;
         const characterData = await findCharData(event.target.innerText)
-        console.log(clickPosition, characterData.coordinates)
+        // console.log(clickPosition, characterData.coordinates)
         const [charCordX, charCordY] = characterData.coordinates
         const checkX = isCoordinateNear(clickPosition[0], charCordX - 1, charCordX + 1);
         const checkY = isCoordinateNear(clickPosition[1], charCordY - 1, charCordY + 1);
@@ -150,7 +148,9 @@ function Main() {
         else {
             console.log(`you found ${characterData.name}`)
             const charRef = doc(db, 'characters', `${characterData.name}`);
-            setDoc(charRef, { foundStatus: true }, { merge: true });
+            await updateDoc(charRef, {
+                foundStatus: true
+              });
         }
     }
 
@@ -167,7 +167,7 @@ function Main() {
             </TargetBox>
             {showWrongBox ? <WrongGuessBox>Wrong guess!</WrongGuessBox> : null}
             {foundCharacters.map((character) => {
-                    return <CharacterFoundBox key={character}>{character}</CharacterFoundBox>
+                return <CharacterFoundBox $cord={character.coordinates} key={character.name}>{character.name}</CharacterFoundBox>
             })}
         </div>
     )
