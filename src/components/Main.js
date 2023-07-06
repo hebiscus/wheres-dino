@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { db } from '../Firebase';
 import { doc, getDoc, collection, query, where, getDocs, setDoc, onSnapshot, updateDoc } from "firebase/firestore";
-import { getAuth, signInAnonymously } from "firebase/auth";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 
 const TargetBox = styled.div`
     background-color: red;
@@ -65,8 +65,10 @@ const GameEndBox = styled.dialog`
     left: 50%;
     transform: translate(-50%, -50%);
     color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `
-
 
 function Main() {
     const [targetPosition, setTargetPosition] = useState([]);
@@ -76,6 +78,7 @@ function Main() {
     const [unfoundCharacters, setUnfoundCharacters] = useState([]);
     const [foundCharacters, setFoundCharacters] = useState([]);
     const [endGameBox, setEndGameBox] = useState(false);
+    const [username, setUsername] = useState();
 
     useEffect(() => {
         const q = query(collection(db, "characters"), where("foundStatus", "==", false));
@@ -173,6 +176,35 @@ function Main() {
         setEndGameBox(true);
     }
 
+    const signIn = () => {
+        const auth = getAuth();
+        signInAnonymously(auth)
+        .then(() => {
+            console.log("signedIn")
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // ...
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+              user.uid = username;
+              const uid = user.uid;
+              console.log(`userID: ${uid}`)
+              // ...
+            } else {
+              // User is signed out
+              // ...
+            }
+        });
+    }
+
+    function handleInput(event) {
+        setUsername(event.nativeEvent.target.value);
+    }
+
     return (
         <div>
             <img onClick={targetBoxSwitch} className='dino-picture' src='./zs9fTdh.gif' alt="dinosaurs"></img>
@@ -189,8 +221,9 @@ function Main() {
             })}
             {endGameBox ? <GameEndBox open>
                 <p>please enter your name to save your score:</p>
-                <input type="text"></input>
-                well, that's the end</GameEndBox> : null}
+                <input onChange={handleInput} type="text"></input>
+                <button onClick={signIn}>Confirm</button>
+                </GameEndBox> : null}
         </div>
     )
 }
