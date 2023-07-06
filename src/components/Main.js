@@ -40,6 +40,7 @@ const WrongGuessBox = styled.div`
     width: 130px;
     position: fixed;
     top: 30%;
+    right: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
@@ -53,6 +54,18 @@ const CharacterFoundBox = styled(WrongGuessBox)`
     top: ${props => props.$cord[1] + 'px'};
 `
 
+const GameEndBox = styled.dialog`
+    position: fixed;
+    background-color: white;
+    min-height: 55%;
+    min-width: 35%;
+    top: 50%;
+    right: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+`
+
 
 function Main() {
     const [targetPosition, setTargetPosition] = useState([]);
@@ -61,6 +74,7 @@ function Main() {
     const [showWrongBox, setWrongBox] = useState(false);
     const [unfoundCharacters, setUnfoundCharacters] = useState([]);
     const [foundCharacters, setFoundCharacters] = useState([]);
+    const [endGameBox, setEndGameBox] = useState(false);
 
     useEffect(() => {
         const q = query(collection(db, "characters"), where("foundStatus", "==", false));
@@ -146,7 +160,14 @@ function Main() {
                 foundStatus: true,
                 coordinatesOnPage: rightChoiceCord,
               });
+            hasGameEnded();
         }
+    }
+
+    const hasGameEnded = () => {
+        const nrOfUnfoundCharacters = unfoundCharacters.length;
+        if (nrOfUnfoundCharacters === 0) return;
+        setEndGameBox(true);
     }
 
     return (
@@ -163,6 +184,7 @@ function Main() {
             {foundCharacters.map((character) => {
                 return <CharacterFoundBox $cord={character.coordinatesOnPage} key={character.name}>{character.name}</CharacterFoundBox>
             })}
+            {endGameBox ? <GameEndBox open>well, that's the end</GameEndBox> : null}
         </div>
     )
 }
