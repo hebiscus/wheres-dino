@@ -1,0 +1,23 @@
+.startBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: fixed;
+    background-color: #a7a8b3;
+    min-height: 55%;
+    min-width: 35%;
+    top: 50%;
+    right: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+
+    > button {
+        background: #776767;
+        text-decoration: none;
+        border: none;
+        line-height: normal;
+        padding: 2em;
+    }
+}
