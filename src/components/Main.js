@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { db } from '../Firebase';
 import { doc, getDoc, collection, query, where, getDocs, setDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 const TargetBox = styled.div`
     background-color: red;
@@ -104,6 +105,10 @@ function Main() {
         return () => unsubscribe();
     }, [])
 
+    useEffect(() => {
+        hasGameEnded();
+    }, [foundCharacters])
+
     function grabClickCoordinates(event) {
         const cordX = Math.floor(event.nativeEvent.offsetX / event.nativeEvent.target.width * 100)
         const cordY = Math.floor(event.nativeEvent.offsetY / event.nativeEvent.target.width * 100)
@@ -144,7 +149,6 @@ function Main() {
     const isCharFound = async (event) => {
         if(!event.target.tagName === 'BUTTON') return;
         const characterData = await findCharData(event.target.innerText)
-        // console.log(clickPosition, characterData.coordinates)
         const [charCordX, charCordY] = characterData.coordinates
         const checkX = isCoordinateNear(clickPosition[0], charCordX - 1, charCordX + 1);
         const checkY = isCoordinateNear(clickPosition[1], charCordY - 1, charCordY + 1);
@@ -160,13 +164,12 @@ function Main() {
                 foundStatus: true,
                 coordinatesOnPage: rightChoiceCord,
               });
-            hasGameEnded();
         }
     }
 
     const hasGameEnded = () => {
-        const nrOfUnfoundCharacters = unfoundCharacters.length;
-        if (nrOfUnfoundCharacters === 0) return;
+        const nrOfFoundCharacters = foundCharacters.length;
+        if (nrOfFoundCharacters < 4) return;
         setEndGameBox(true);
     }
 
@@ -184,7 +187,10 @@ function Main() {
             {foundCharacters.map((character) => {
                 return <CharacterFoundBox $cord={character.coordinatesOnPage} key={character.name}>{character.name}</CharacterFoundBox>
             })}
-            {endGameBox ? <GameEndBox open>well, that's the end</GameEndBox> : null}
+            {endGameBox ? <GameEndBox open>
+                <p>please enter your name to save your score:</p>
+                <input type="text"></input>
+                well, that's the end</GameEndBox> : null}
         </div>
     )
 }
