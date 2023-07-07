@@ -75,42 +75,38 @@ function Main() {
     const [clickPosition, setClickPosition] = useState([]);
     const [showTargetBox, setShowTargetBox] = useState(false);
     const [showWrongBox, setWrongBox] = useState(false);
-    const [unfoundCharacters, setUnfoundCharacters] = useState([]);
-    const [foundCharacters, setFoundCharacters] = useState([]);
+    // const [unfoundCharacters, setUnfoundCharacters] = useState([]);
+    // const [foundCharacters, setFoundCharacters] = useState([]);
     const [endGameBox, setEndGameBox] = useState(false);
+    const [characters, setCharacters] = useState([]);
     const [username, setUsername] = useState();
 
     useEffect(() => {
-        const q = query(collection(db, "characters"), where("foundStatus", "==", false));
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const characters = [];
-            querySnapshot.forEach((doc) => {
-                characters.push(doc.data());
-            });
-            console.log("current unfound characters", ...characters);
-            setUnfoundCharacters(characters);
-        });
+        let ignore = false;
 
-        return () => unsubscribe();
-    }, [])
+        const getCharacters = async () => {
+            const charRef = collection(db, "characters");
+            const charSnap = await getDocs(charRef);
+            if (!ignore) {
+                charSnap.forEach(character => {
+                    console.log(character.data())
+                    setCharacters((previousCharacters) => {
+                        return [...previousCharacters, character.data()]
+                    })
+                })
+            } 
+        }
 
-    useEffect(() => {
-        const q = query(collection(db, "characters"), where("foundStatus", "==", true));
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const characters = [];
-            querySnapshot.forEach((doc) => {
-                characters.push(doc.data());
-            });
-            console.log("current found characters", ...characters);
-            setFoundCharacters(characters);
-        });
+        getCharacters();
 
-        return () => unsubscribe();
+        return () => {
+            ignore = true;
+        };
     }, [])
 
     useEffect(() => {
         hasGameEnded();
-    }, [foundCharacters])
+    }, [characters])
 
     function grabClickCoordinates(event) {
         const cordX = Math.floor(event.nativeEvent.offsetX / event.nativeEvent.target.width * 100)
@@ -150,7 +146,7 @@ function Main() {
     }
 
     const isCharFound = async (event) => {
-        if(!event.target.tagName === 'BUTTON') return;
+        if(event.target.tagName !== 'BUTTON') return;
         const characterData = await findCharData(event.target.innerText)
         const [charCordX, charCordY] = characterData.coordinates
         const checkX = isCoordinateNear(clickPosition[0], charCordX - 1, charCordX + 1);
@@ -162,16 +158,18 @@ function Main() {
             const rightChoiceCord = [event.pageX, event.pageY];
             console.log(rightChoiceCord)
             console.log(`you found ${characterData.name}`)
-            const charRef = doc(db, 'characters', `${characterData.name}`);
-            await updateDoc(charRef, {
-                foundStatus: true,
-                coordinatesOnPage: rightChoiceCord,
-              });
+            const updatedCharacters = characters.map((character) => {
+                if (character.name === characterData.name) {
+                    return {...character, foundStatus: true, coordinatesOnPage: rightChoiceCord}
+                }
+                return character;
+            })
+            setCharacters(updatedCharacters);
         }
     }
 
     const hasGameEnded = () => {
-        const nrOfFoundCharacters = foundCharacters.length;
+        const nrOfFoundCharacters = characters.filter(character => character.foundStatus === true).length
         if (nrOfFoundCharacters < 4) return;
         setEndGameBox(true);
     }
@@ -210,14 +208,20 @@ function Main() {
             <img onClick={targetBoxSwitch} className='dino-picture' src='./zs9fTdh.gif' alt="dinosaurs"></img>
             <TargetBox $show={showTargetBox} $cord={targetPosition}>
                 <DropdownMenu onClick={isCharFound}>
-                    {unfoundCharacters.map((character) => {
-                        return <ChoiceButton key={character.name}>{character.name}</ChoiceButton>
+                    {characters.map((character) => {
+                        if (!character.foundStatus) {
+                            return <ChoiceButton key={character.name}>{character.name}</ChoiceButton>
+                        }
+                        return null;
                     })}
                 </DropdownMenu>
             </TargetBox>
             {showWrongBox ? <WrongGuessBox>Wrong guess!</WrongGuessBox> : null}
-            {foundCharacters.map((character) => {
-                return <CharacterFoundBox $cord={character.coordinatesOnPage} key={character.name}>{character.name}</CharacterFoundBox>
+            {characters.map((character) => {
+                if (character.foundStatus) {
+                    return <CharacterFoundBox $cord={character.coordinatesOnPage} key={character.name}>{character.name}</CharacterFoundBox>
+                }
+                return null;
             })}
             {endGameBox ? <GameEndBox open>
                 <p>please enter your name to save your score:</p>

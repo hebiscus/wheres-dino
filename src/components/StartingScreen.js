@@ -3,7 +3,6 @@ import '../styles/App.scss'
 
 function StartingScreen({switchStartingBox}) {
 
-
     return (
         <div className='startBox'>
             <h1>Welcome to Where's Dino!</h1>
