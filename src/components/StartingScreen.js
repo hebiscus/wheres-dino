@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import '../styles/App.scss'
 
-function StartingScreen({switchStartingBox}) {
+function StartingScreen({switchStartingBox, turnTimerOn}) {
+
+    function startGame() {
+        switchStartingBox();
+        turnTimerOn();
+    }
 
     return (
         <div className='startBox'>
@@ -11,7 +16,7 @@ function StartingScreen({switchStartingBox}) {
                 <p>But be careful, you're timed!</p>
                 <p> Coincidentally, you won't have to find any dinosaurs. Maybe because they're extinct...?</p>
             </div>
-            <button onClick={switchStartingBox}>Start guessing</button>
+            <button onClick={startGame}>Start guessing</button>
         </div>
     )
 }

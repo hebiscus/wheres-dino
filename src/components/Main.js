@@ -1,6 +1,6 @@
 import '../styles/Main.scss'
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
+import { useState, useEffect} from 'react';
 import { db } from '../Firebase';
 import { doc, getDoc, collection, query, where, getDocs, setDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
@@ -70,13 +70,11 @@ const GameEndBox = styled.dialog`
     align-items: center;
 `
 
-function Main() {
+function Main({stopTimer}) {
     const [targetPosition, setTargetPosition] = useState([]);
     const [clickPosition, setClickPosition] = useState([]);
     const [showTargetBox, setShowTargetBox] = useState(false);
     const [showWrongBox, setWrongBox] = useState(false);
-    // const [unfoundCharacters, setUnfoundCharacters] = useState([]);
-    // const [foundCharacters, setFoundCharacters] = useState([]);
     const [endGameBox, setEndGameBox] = useState(false);
     const [characters, setCharacters] = useState([]);
     const [username, setUsername] = useState();
@@ -169,6 +167,7 @@ function Main() {
         const nrOfFoundCharacters = characters.filter(character => character.foundStatus === true).length
         if (nrOfFoundCharacters < 4) return;
         setEndGameBox(true);
+        stopTimer();
     }
 
     const signIn = () => {

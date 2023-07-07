@@ -49,7 +49,11 @@ const NavBarToggle = styled.span`
   color: rgba(255,255,255,0.8);
   font-size: 24px;
 `
-function Navbar() {
+const Timer = styled.h1`
+  color: white;
+`
+
+function Navbar({timer}) {
     const [showNav, setShowNaw] = useState('flex');
   
     const toggleNavbar = () => setShowNaw(showNav === 'flex' ? 'none' : "flex");
@@ -59,6 +63,7 @@ function Navbar() {
       <NavBarToggle onClick={() => toggleNavbar}>
       </NavBarToggle>
       <Logo href="#">logo</Logo>
+      <Timer>Time passed: {timer.toFixed(3)}</Timer>
       <MainNav display={showNav}></MainNav>
     </Bar>
   )
