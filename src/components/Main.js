@@ -89,7 +89,6 @@ function Main() {
             const charSnap = await getDocs(charRef);
             if (!ignore) {
                 charSnap.forEach(character => {
-                    console.log(character.data())
                     setCharacters((previousCharacters) => {
                         return [...previousCharacters, character.data()]
                     })
@@ -156,8 +155,6 @@ function Main() {
         } 
         else {
             const rightChoiceCord = [event.pageX, event.pageY];
-            console.log(rightChoiceCord)
-            console.log(`you found ${characterData.name}`)
             const updatedCharacters = characters.map((character) => {
                 if (character.name === characterData.name) {
                     return {...character, foundStatus: true, coordinatesOnPage: rightChoiceCord}
