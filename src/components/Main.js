@@ -78,6 +78,8 @@ function Main({stopTimer, timer}) {
     const [endGameBox, setEndGameBox] = useState(false);
     const [characters, setCharacters] = useState([]);
     const [username, setUsername] = useState();
+    const [errorMessage, setErrorMessage] = useState("");
+    const [scoreBoard, setScoreBoard] = useState(false);
 
     useEffect(() => {
         let ignore = false;
@@ -196,21 +198,20 @@ function Main({stopTimer, timer}) {
     }
 
     const saveUserScore = async (uid) => {
-        const usersRef = collection(db, "users");
-
         const userRef = doc(db, "users", uid);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
             console.log("user exists, data:", userSnap.data());
-          } else {
+            setErrorMessage("this player already exists!")
+        } else {
             // docSnap.data() will be undefined in this case
             console.log("Created new user");
             await setDoc(doc(db, "users", uid), {
                 name: uid,
                 score: timer,
               });
-          }
+        }
     }
 
     function handleInput(event) {
@@ -239,6 +240,7 @@ function Main({stopTimer, timer}) {
             })}
             {endGameBox ? <GameEndBox open>
                 <p>please enter your name to save your score:</p>
+                {errorMessage === "" ? null : <p className='error-msg'>{errorMessage}</p>}
                 <input onChange={handleInput} type="text"></input>
                 <button onClick={signIn}>Confirm</button>
                 </GameEndBox> : null}
