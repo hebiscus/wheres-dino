@@ -70,7 +70,7 @@ const GameEndBox = styled.dialog`
     align-items: center;
 `
 
-function Main({stopTimer}) {
+function Main({stopTimer, timer}) {
     const [targetPosition, setTargetPosition] = useState([]);
     const [clickPosition, setClickPosition] = useState([]);
     const [showTargetBox, setShowTargetBox] = useState(false);
@@ -187,12 +187,30 @@ function Main({stopTimer}) {
               user.uid = username;
               const uid = user.uid;
               console.log(`userID: ${uid}`)
-              // ...
+              saveUserScore(uid)
             } else {
               // User is signed out
               // ...
             }
         });
+    }
+
+    const saveUserScore = async (uid) => {
+        const usersRef = collection(db, "users");
+
+        const userRef = doc(db, "users", uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+            console.log("user exists, data:", userSnap.data());
+          } else {
+            // docSnap.data() will be undefined in this case
+            console.log("Created new user");
+            await setDoc(doc(db, "users", uid), {
+                name: uid,
+                score: timer,
+              });
+          }
     }
 
     function handleInput(event) {

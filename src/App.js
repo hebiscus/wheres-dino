@@ -37,7 +37,7 @@ function App() {
   return (
     <div className="App">
       <Navbar timer={secondsPassed} />
-      {startingBox ? <StartingScreen switchStartingBox={switchStartingBox} turnTimerOn={startTimer} /> : <Main stopTimer={stopTimer} />}
+      {startingBox ? <StartingScreen switchStartingBox={switchStartingBox} turnTimerOn={startTimer} /> : <Main stopTimer={stopTimer} timer={secondsPassed} />}
     </div>
   );
 }
