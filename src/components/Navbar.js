@@ -5,7 +5,7 @@ const Bar = styled.nav`
   flex-direction: column;
   align-items: center;
   font-size: 18px;
-  background-color: black;
+  background-color: #92B6AA;
   padding: 0.5em;
   @media (min-width: 768px) {
     flex-direction: row;
@@ -30,7 +30,7 @@ const CharactersBox  = styled.div`
 `
 
 const Timer = styled.h1`
-  color: white;
+  color: black;
 `
 
 function Navbar({timer}) {

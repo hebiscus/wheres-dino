@@ -17,11 +17,17 @@
    }
 }
 
+.start-background {
+    height: 100vh;
+    background-color: #92B6AA;
+}
+
 .startBox {
     display: flex;
     flex-direction: column;
     position: fixed;
-    background-color: #a7a8b3;
+    background-color: #92B6AA;
+    border: 8px ridge #bcffca;
     width: 60%;
     max-width: 700px;
     top: 50%;
@@ -48,7 +54,7 @@
     }
 
     > button {
-        background: #776767;
+        background: #7D9E9D;
         max-width: 320px;
         text-decoration: none;
         border: none;
