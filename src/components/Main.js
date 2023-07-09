@@ -2,8 +2,10 @@ import '../styles/Main.scss'
 import styled from 'styled-components';
 import { useState, useEffect} from 'react';
 import { db } from '../Firebase';
-import { doc, getDoc, collection, query, where, getDocs, setDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs, setDoc, onSnapshot, updateDoc, limit, orderBy } from "firebase/firestore";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
+import { orderByValue, orderByChild } from "firebase/database";
+import Scoreboard from './Scoreboard';
 
 const TargetBox = styled.div`
     background-color: red;
@@ -68,6 +70,9 @@ const GameEndBox = styled.dialog`
     display: flex;
     flex-direction: column;
     align-items: center;
+`
+const ScoreBoard = styled(GameEndBox)`
+    background-color:  #cfeab0;
 `
 
 function Main({stopTimer, timer}) {
@@ -211,12 +216,15 @@ function Main({stopTimer, timer}) {
                 name: uid,
                 score: timer,
               });
+            setEndGameBox(false);
+            setScoreBoard(true);
         }
     }
 
     function handleInput(event) {
         setUsername(event.nativeEvent.target.value);
     }
+
 
     return (
         <div>
@@ -244,6 +252,7 @@ function Main({stopTimer, timer}) {
                 <input onChange={handleInput} type="text"></input>
                 <button onClick={signIn}>Confirm</button>
                 </GameEndBox> : null}
+            {scoreBoard ? <Scoreboard/> : null}
         </div>
     )
 }
