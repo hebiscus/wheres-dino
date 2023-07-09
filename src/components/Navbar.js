@@ -1,70 +1,48 @@
 import styled from 'styled-components';
-import { useState } from 'react';
 
 const Bar = styled.nav`
-  font-size: 18px;
-  border: 1px solid rgba(0,0,0,0.2);
-  background-color: black;
-  padding-bottom: 10px;
-  @media (min-width: 768px) {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 0;
-    height: 70px;
-    align-items: center;
-  }
-`
-const MainNav = styled.ul`
-  list-style-type: none;
-  display: ${ props => props.display };
+  display: flex;
   flex-direction: column;
+  align-items: center;
+  font-size: 18px;
+  background-color: black;
+  padding: 0.5em;
   @media (min-width: 768px) {
-    display: flex !important;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: center;
+    gap: 3%;
+    height: 90px;
+    align-items: center;
+
+    > .characters-box {
+      margin-left: 30px;
+    }
+
+    > h1 {
+      width: 350px;
+    }
   }
 `
 
-const NavLink = styled.a`
-  list-style-type: none;
+const CharactersBox  = styled.div`
   display: flex;
-  text-decoration: none;
-  color: white;
-  flex-direction: column;
-  @media (min-width: 768px) {    
-    margin: 0px 10px;
-  }
+  gap: 3%;
 `
-const Logo  = styled(NavLink)`
-  display: inline-block;
-  font-size: 22px;
-  margin-top: 10px;
-  margin-left: 20px;
-`
-const NavBarToggle = styled.span`
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  cursor: pointer; 
-  color: rgba(255,255,255,0.8);
-  font-size: 24px;
-`
+
 const Timer = styled.h1`
   color: white;
 `
 
 function Navbar({timer}) {
-    const [showNav, setShowNaw] = useState('flex');
-  
-    const toggleNavbar = () => setShowNaw(showNav === 'flex' ? 'none' : "flex");
-
     return (
-    <Bar>
-      <NavBarToggle onClick={() => toggleNavbar}>
-      </NavBarToggle>
-      <Logo href="#">logo</Logo>
+    <Bar className='navbar'>
+      <CharactersBox className='characters-box'>
+        <img src='./Sheep.png' alt='Sheep'></img>
+        <img src='./Dog.png' alt='Dog'></img>
+        <img src='./Alien.png' alt='Alien'></img>
+        <img src='./Goat.png' alt='Goat'></img>
+      </CharactersBox>
       <Timer>Time passed: {timer.toFixed(3)}</Timer>
-      <MainNav display={showNav}></MainNav>
     </Bar>
   )
 }
