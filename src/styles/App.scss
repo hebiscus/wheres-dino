@@ -1,22 +1,27 @@
+* {
+    box-sizing: border-box;
+}
+
 .startBox {
     display: flex;
     flex-direction: column;
     position: fixed;
     background-color: #a7a8b3;
-    min-width: 50%;
+    width: 50%;
+    max-width: 600px;
     top: 50%;
     right: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: black;
-    padding: 2em;
+    padding: 1em;
 
     > h1 {
         font-size: clamp(2.0625rem, 1.7941rem + 1.227vw, 3.3125rem);
     }
 
     .start-instructions {
-        font-size: clamp(1.125rem, 0.8566rem + 1.227vw, 2.375rem);
+        font-size: clamp(1.125rem, 0.9908rem + 0.6135vw, 1.75rem);
 
         > p {
             padding: 0.5em 0;
