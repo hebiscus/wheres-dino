@@ -1,24 +1,41 @@
 .startBox {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
     position: fixed;
     background-color: #a7a8b3;
-    min-height: 55%;
-    min-width: 35%;
+    min-width: 50%;
     top: 50%;
     right: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: black;
+    padding: 2em;
+
+    > h1 {
+        font-size: clamp(2.0625rem, 1.7941rem + 1.227vw, 3.3125rem);
+    }
+
+    .start-instructions {
+        font-size: clamp(1.125rem, 0.8566rem + 1.227vw, 2.375rem);
+
+        > p {
+            padding: 0.5em 0;
+        }
+    }
+
+    > h1, p {
+        margin: 0;
+    }
 
     > button {
         background: #776767;
+        max-width: 320px;
         text-decoration: none;
         border: none;
         line-height: normal;
-        padding: 2em;
+        padding: 0.6em;
+        font-size: clamp(1.4375rem, 1.2765rem + 0.7362vw, 2.1875rem);
+        margin: 0 auto;
     }
 }
 
@@ -29,8 +46,7 @@
 .scoreboard {
     position: fixed;
     background-color:  #cfeab0;
-    min-height: 55%;
-    min-width: 35%;
+    width: 50vmin;
     top: 50%;
     right: 50%;
     left: 50%;
@@ -39,4 +55,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.topUserBox {
+    display: flex;
 }
