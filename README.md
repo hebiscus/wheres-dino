@@ -1,7 +1,6 @@
 # Where's Dino
 
-Where's Waldo type of game where players have to spot 4 characters. Built with React / Scss / Firebase.
-
+Where's Waldo type of game where players have to spot 4 characters. <br>
 Players' scores are saved in Firebase. Top 10 best scores are displayed at the end of the game.
 
 Specific technologies used: **React, Firebase, Sass/Scss, Styled Components library**
