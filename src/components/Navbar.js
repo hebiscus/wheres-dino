@@ -10,6 +10,11 @@ const Bar = styled.nav`
   background-color: #64B6A0;
   box-shadow: 0px 3px 11px 0px rgba(0, 0, 0, 0.7);
   padding: 0.5em;
+
+  > h1 {
+    width: 300px;
+  }
+
   @media (min-width: 768px) {
     flex-direction: row;
     justify-content: center;
