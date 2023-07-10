@@ -3,9 +3,12 @@ import styled from 'styled-components';
 const Bar = styled.nav`
   display: flex;
   flex-direction: column;
+  position: fixed;
+  width: 100%;
   align-items: center;
   font-size: 18px;
-  background-color: #92B6AA;
+  background-color: #64B6A0;
+  box-shadow: 0px 3px 11px 0px rgba(0, 0, 0, 0.7);
   padding: 0.5em;
   @media (min-width: 768px) {
     flex-direction: row;
@@ -30,7 +33,6 @@ const CharactersBox  = styled.div`
 `
 
 const Timer = styled.h1`
-  color: black;
 `
 
 function Navbar({timer}) {

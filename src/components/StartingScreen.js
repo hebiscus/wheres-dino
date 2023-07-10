@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import '../styles/App.scss'
 
 function StartingScreen({switchStartingBox, turnTimerOn}) {
@@ -13,7 +12,7 @@ function StartingScreen({switchStartingBox, turnTimerOn}) {
             <div className='startBox'>
                 <h1>Welcome to Where's Dino!</h1>
                 <div className="start-instructions">
-                    <p>This Where's Waldo type of game challenges you to find 4 characters.</p>
+                    <p>This <em>"Where's Waldo"</em> type of game challenges you to find 4 characters.</p>
                     <p>But be careful, you're timed!</p>
                     <p> Coincidentally, you won't have to find any dinosaurs. Maybe because they're extinct...?</p>
                 </div>

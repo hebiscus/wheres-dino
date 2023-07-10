@@ -1,6 +1,7 @@
 * {
     box-sizing: border-box;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'DM Sans', sans-serif;
+    color: white;
 }
 
 .navbar {
@@ -18,18 +19,20 @@
 }
 
 .start-background {
-    height: 100vh;
-    background-color: #92B6AA;
+    height: calc(100vh - 90px);
+    background-image: url('../../public/dino-blur.png');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .startBox {
     display: flex;
     flex-direction: column;
     position: fixed;
-    background-color: #92B6AA;
-    border: 8px ridge #bcffca;
+    background-color: #64B6A0;
+    box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 1);
     width: 60%;
-    max-width: 700px;
+    max-width: 636px;
     top: 50%;
     right: 50%;
     left: 50%;
@@ -39,13 +42,14 @@
 
     > h1 {
         font-size: clamp(2.0625rem, 1.7941rem + 1.227vw, 3.3125rem);
+        text-align: center;
     }
 
     .start-instructions {
         font-size: clamp(1.125rem, 0.9908rem + 0.6135vw, 1.75rem);
 
         > p {
-            padding: 0.5em 0;
+            padding: 0.5em;
         }
     }
 
@@ -54,13 +58,15 @@
     }
 
     > button {
-        background: #7D9E9D;
+        background: #2C816D;
         max-width: 320px;
         text-decoration: none;
         border: none;
         line-height: normal;
         padding: 0.6em;
         font-size: clamp(1.4375rem, 1.2765rem + 0.7362vw, 2.1875rem);
+        border-right: 3px solid #000000;
+        border-bottom: 3px solid #000000;
         margin: 0 auto;
     }
 }
