@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/wheres-dino/static/css/main.6d71bcdb.css",
+    "main.js": "/wheres-dino/static/js/main.38892f69.js",
+    "static/media/dino-blur.png": "/wheres-dino/static/media/dino-blur.20d6119d27ebf3a5474c.png",
+    "index.html": "/wheres-dino/index.html",
+    "main.6d71bcdb.css.map": "/wheres-dino/static/css/main.6d71bcdb.css.map",
+    "main.38892f69.js.map": "/wheres-dino/static/js/main.38892f69.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6d71bcdb.css",
+    "static/js/main.38892f69.js"
+  ]
+}
