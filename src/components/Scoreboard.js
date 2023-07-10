@@ -7,7 +7,7 @@ function Scoreboard() {
     const [topScores, setTopScores] = useState([]);
 
     useEffect(() => {
-        const q = query(collection(db, "users"), orderBy("score"), limit(5));
+        const q = query(collection(db, "users"), orderBy("score"), limit(10));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const topUsers = [];
             querySnapshot.forEach((doc) => {

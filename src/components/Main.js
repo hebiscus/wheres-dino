@@ -63,9 +63,9 @@ const CharacterFoundBox = styled(WrongGuessBox)`
 `
 
 const GameEndBox = styled.dialog`
+    font-size: clamp(1.125rem, 1.0278rem + 0.4321vw, 1.5625rem);
     position: fixed;
-    background-color: white;
-    min-height: 55%;
+    background-color: #64B6A0;
     min-width: 35%;
     top: 50%;
     right: 50%;
@@ -75,6 +75,30 @@ const GameEndBox = styled.dialog`
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
+    padding: 1.5em;
+
+    > p {
+        margin: 0;
+        text-align: center;
+    }
+
+    > input {
+        color: black;
+        margin: 0.8rem 0;
+        font-size: 1.3rem;
+        background-color#009688;
+    }
+
+    >button {
+        background-color: #2C816D;
+        font-size: clamp(1.125rem, 0.9167rem + 0.9259vw, 2.0625rem);
+
+        &:hover {
+            cursor: pointer;
+            transform: scale(1.05)
+        }
+    }
 `
 
 function Main({stopTimer, timer}) {
