@@ -2,26 +2,24 @@ import '../styles/Main.scss'
 import styled from 'styled-components';
 import { useState, useEffect} from 'react';
 import { db } from '../Firebase';
-import { doc, getDoc, collection, query, where, getDocs, setDoc, onSnapshot, updateDoc, limit, orderBy } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, setDoc} from "firebase/firestore";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
-import { orderByValue, orderByChild } from "firebase/database";
 import Scoreboard from './Scoreboard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCrosshairs } from '@fortawesome/free-solid-svg-icons';
 
 const TargetBox = styled.div`
-    background-color: red;
     display: ${props => props.$show ? "block" : "none"};
-    height: 30px;
-    width: 30px;
+    height: 50px;
+    width: 50px;
     position: absolute;
-    left: ${props => props.$cord[0] + 'px'};
-    top: ${props => props.$cord[1] + 'px'}
+    left: ${props => props.$cord[0] - 20 + 'px'};
+    top: ${props => props.$cord[1] - 20 + 'px'}
 `
 
 const DropdownMenu = styled.div`
-    min-width: 50px;
-    min-height: 65px;
-    max-width: 80px;
-    background-color: black;
+    width: 80px;
+    background-color: #000000a8;
     position: relative;
     top: -10px;
     left: 35px;
@@ -35,14 +33,17 @@ const ChoiceButton = styled.button`
     border: none;
     line-height: normal;
     color: white;
+    font-size: clamp(1.125rem, 1.0278rem + 0.4321vw, 1.5625rem);
 `
 
 const WrongGuessBox = styled.div`
-    background-color: black;
-    height: 50px;
-    width: 130px;
+    font-size: clamp(1.125rem, 0.9583rem + 0.7407vw, 1.875rem);
+    box-shadow: 3px 3px black;
+    padding: 0.5em 1em;
+    background-color: #ba5252;
+    width: 150px;
     position: fixed;
-    top: 30%;
+    top: 20%;
     right: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -51,10 +52,14 @@ const WrongGuessBox = styled.div`
 `
 
 const CharacterFoundBox = styled(WrongGuessBox)`
+    font-size: clamp(1.125rem, 1.0278rem + 0.4321vw, 1.5625rem);
+    text-align: center;
+    width: 110px;
     position: absolute;
-    background-color: cyan;
-    left: ${props => props.$cord[0] + 'px'};
-    top: ${props => props.$cord[1] + 'px'};
+    background-color: #000000a8;
+    left: ${props => props.$cord[0] - 30 + 'px'};
+    top: ${props => props.$cord[1] - 80 + 'px'};
+    border: 1px solid #b5ec74;
 `
 
 const GameEndBox = styled.dialog`
@@ -70,9 +75,6 @@ const GameEndBox = styled.dialog`
     display: flex;
     flex-direction: column;
     align-items: center;
-`
-const ScoreBoard = styled(GameEndBox)`
-    background-color:  #cfeab0;
 `
 
 function Main({stopTimer, timer}) {
@@ -230,6 +232,7 @@ function Main({stopTimer, timer}) {
         <div>
             <img onClick={targetBoxSwitch} className='dino-picture' src='./zs9fTdh.gif' alt="dinosaurs"></img>
             <TargetBox $show={showTargetBox} $cord={targetPosition}>
+                <FontAwesomeIcon icon={faCrosshairs} style={{color: "#a5124d", height:50}} />
                 <DropdownMenu onClick={isCharFound}>
                     {characters.map((character) => {
                         if (!character.foundStatus) {
